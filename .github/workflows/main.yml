@@ -5,5 +5,5 @@ jobs:
     steps:
       - run: |
           echo start
-          echo $GITHUB_CONTEXT
+          echo $GITHUB_REF
           echo done
