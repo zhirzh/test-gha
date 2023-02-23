@@ -13,8 +13,8 @@
 #           # hub pr checkout ${{ github.event.issue.number }}
 #           echo done
 
-name: CI
-on: [push]
+
+on: issue_comment
 jobs:
   build:
     runs-on: ubuntu-latest
