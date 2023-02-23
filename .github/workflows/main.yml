@@ -1,4 +1,4 @@
-on: issue_comment
+on: [issue_comment, push]
 jobs:
   myjob:
     runs-on: ubuntu-latest
