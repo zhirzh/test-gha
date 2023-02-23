@@ -1,3 +1,3 @@
 # test-gha
 
-test github actions
+test github actions.
