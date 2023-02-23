@@ -5,8 +5,8 @@ jobs:
     env:
       GITHUB_CONTEXT: ${{ toJson(github) }}
     steps:
-      - uses: lhotari/action-upterm@v1
-#         run: |
-#           echo start
-#           echo $GITHUB_CONTEXT
-#           echo done
+      - run: |
+          echo start
+          hub pr checkout ${{ github.event.issue.number }}
+          git branch -a
+          echo done
