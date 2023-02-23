@@ -2,8 +2,10 @@ on: issue_comment
 jobs:
   myjob:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_CONTEXT: ${{ toJson(github) }}
     steps:
       - run: |
           echo start
-          echo $GITHUB_HEAD_REF
+          echo $GITHUB_CONTEXT
           echo done
