@@ -1,0 +1,14 @@
+on:
+  issue_comment:
+    types:
+      - created
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run a one-line script
+        run: |
+          MSG="hello world"
+          node -e "console.log('$MSG')"
+          node -p "'$MSG'"
