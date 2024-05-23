@@ -11,4 +11,4 @@ jobs:
       - name: Run a one-line script
         run: |
           cmd="/fastlane build platform:android env:staging"
-          node -e "'$CMD'.replace('/fastlane', '').trimStart().split(' ').forEach((arg) => console.log(arg))"
+          node -p "'$CMD'.replace('/fastlane', '').trimStart().split(' ').forEach((arg) => console.log(arg))"
