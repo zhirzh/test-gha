@@ -1,0 +1,34 @@
+version: 2.1
+
+parameters:
+  GHA_Meta:
+    type: string
+    default: ""
+  GHA_Event:
+    type: string
+    default: ""
+  GHA_Actor:
+    type: string
+    default: ""
+  GHA_Action:
+    type: string
+    default: ""
+
+workflows:
+  fast:
+    # when:
+    #   equal: [<<pipeline.parameters.GHA_Meta>>, "fastlane"]
+    jobs:
+      - lane
+
+jobs:
+  lane:
+    machine:
+      image: ubuntu-2204:current
+    steps:
+      - run:
+          command: |
+            echo <<pipeline.parameters.GHA_Meta>>
+            echo <<pipeline.parameters.GHA_Event>>
+            echo <<pipeline.parameters.GHA_Actor>>
+            echo <<pipeline.parameters.GHA_Action>>
