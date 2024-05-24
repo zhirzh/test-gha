@@ -17,7 +17,7 @@ jobs:
         env:
           foo: ${{ 'baz' }}
         run: |
-          cmd="/fastlane build platform:android env:staging"
+          CMD="/fastlane build platform:android env:staging"
           node -p "'$CMD'.replace('/fastlane ', '')"
           node -p "process.env.foo"
 
