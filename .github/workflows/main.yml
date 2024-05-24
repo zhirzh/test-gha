@@ -6,12 +6,32 @@ on:
 
 jobs:
   test:
+    if: |
+      github.event.issue.pull_request &&
+      startsWith(github.event.comment.body, '/fastlane')
+
     runs-on: ubuntu-latest
+
     steps:
-      - name: Run a one-line script
+      - name: test
         env:
           foo: ${{ 'baz' }}
         run: |
           cmd="/fastlane build platform:android env:staging"
           node -p "'$CMD'.replace('/fastlane ', '')"
           node -p "process.env.foo"
+
+      - id: get-pr-branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.issue.pull_request.html_url }}
+        run: |
+          BRANCH_NAME=$(gh pr view  --json headRefName  --jq .headRefName  $PR_URL)
+          echo "BRANCH=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+
+      - uses: circleci-public/trigger-circleci-pipeline-action@v1.2.0
+        env:
+          CCI_TOKEN: ${{ secrets.CCI_TOKEN_SZ }}
+        with:
+          target-branch: ${{ steps.get-pr-branch.outputs.BRANCH }}
+          GHA_Meta: "fastlane"
