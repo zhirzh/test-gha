@@ -1,0 +1,17 @@
+on:
+  issue_comment:
+    types:
+      - created
+      - edited
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run a one-line script
+        env:
+          foo: ${{ 'baz' }}
+        run: |
+          cmd="/fastlane build platform:android env:staging"
+          node -p "'$CMD'.replace('/fastlane ', '')"
+          node -p "process.env.foo"
