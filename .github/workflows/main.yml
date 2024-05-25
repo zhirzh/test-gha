@@ -1,3 +1,5 @@
+# fastlane build platform:android
+
 on:
   issue_comment:
     types:
@@ -13,25 +15,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: print event
+        run: echo ${{ toJson(github.event) }}
+
       - name: test
         env:
-          foo: ${{ 'baz' }}
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.issue }}
+          PR_NO: ${{ github.event.issue.number }}
         run: |
-          CMD="/fastlane build platform:android env:staging"
-          node -p "'$CMD'.replace('/fastlane ', '')"
-          node -p "process.env.foo"
+          echo "BRANCH=$(gh pr view --json headRefName --jq .headRefName $PR_URL)"
+          echo "BRANCH=$(gh pr view --json headRefName --jq .headRefName $PR_NO)"
 
       - id: get-pr-branch
         env:
           GH_TOKEN: ${{ github.token }}
-          PR_URL: ${{ github.event.issue.pull_request.html_url }}
+          PR_URL: ${{ github.event.issue }}
         run: |
-          BRANCH_NAME=$(gh pr view  --json headRefName  --jq .headRefName  $PR_URL)
-          echo "BRANCH=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+          echo "BRANCH=$(gh pr view --json headRefName --jq .headRefName $PR_URL)" >> "$GITHUB_OUTPUT"
+
+      - name: Split the string
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const comment = context.payload.comment.body;
+            const parts = comment.split(' ');
+            console.log(parts);
 
       - uses: circleci-public/trigger-circleci-pipeline-action@v1.2.0
         env:
           CCI_TOKEN: ${{ secrets.CCI_TOKEN_SZ }}
         with:
           target-branch: ${{ steps.get-pr-branch.outputs.BRANCH }}
-          GHA_Meta: "fastlane"
+          GHA_Meta: ${{ github.event.comment.body }}
