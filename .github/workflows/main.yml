@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Start SSH
-        uses: Tofandel/ssh-server-action@v1.0.0
+        uses: mxschmitt/action-tmate@v3
 
       - name: test
         env:
