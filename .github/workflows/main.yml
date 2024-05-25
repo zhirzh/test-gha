@@ -22,7 +22,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PR_URL: ${{ github.event.issue }}
-          PR_NO: ${{ github.event.issue.number }}
+          PR_NO: ${{ github.event.issue.number.html_url }}
         run: |
           echo "BRANCH=$(gh pr view --json headRefName --jq .headRefName $PR_URL)"
           echo "BRANCH=$(gh pr view --json headRefName --jq .headRefName $PR_NO)"
@@ -30,7 +30,7 @@ jobs:
       - id: get-pr-branch
         env:
           GH_TOKEN: ${{ github.token }}
-          PR_URL: ${{ github.event.issue }}
+          PR_URL: ${{ github.event.issue.html_url }}
         run: |
           echo "BRANCH=$(gh pr view --json headRefName --jq .headRefName $PR_URL)" >> "$GITHUB_OUTPUT"
 
