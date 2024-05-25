@@ -22,30 +22,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: test
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR_URL: ${{ github.event.issue.html_url }}
-          PR_NO: ${{ github.event.issue.number }}
-        run: |
-          echo "BRANCH=$(gh pr view --json headRefName --jq .headRefName $PR_URL)"
-          echo "BRANCH=$(gh pr view --json headRefName --jq .headRefName $PR_NO)"
+      - name: print github-script internals
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            console.log(JSON.stringify(context, null, 2))
+            console.log(JSON.stringify(github, null, 2))
 
       - id: get-pr-branch
         env:
           GH_TOKEN: ${{ github.token }}
           PR_URL: ${{ github.event.issue.html_url }}
         run: |
-          echo "BRANCH=$(gh pr view --json headRefName --jq .headRefName $PR_URL)" >> "$GITHUB_OUTPUT"
-
-      - name: Split the string
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const comment = context.payload.comment.body;
-            const parts = comment.split(' ');
-            console.log(parts);
+          echo "BRANCH=$(gh pr view --json headRefName --jq .headRefName $PR_URL)"
 
       - uses: circleci-public/trigger-circleci-pipeline-action@v1.2.0
         env:
