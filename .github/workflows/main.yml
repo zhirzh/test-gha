@@ -7,6 +7,13 @@ on:
       - edited
 
 jobs:
+  ssh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Start SSH
+        uses: mxschmitt/action-tmate@v3
+
   test:
     # if: |
     #   github.event.issue.pull_request &&
@@ -15,9 +22,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Start SSH
-        uses: mxschmitt/action-tmate@v3
-
       - name: test
         env:
           GH_TOKEN: ${{ github.token }}
