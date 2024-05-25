@@ -25,8 +25,8 @@ jobs:
       - name: test
         env:
           GH_TOKEN: ${{ github.token }}
-          PR_URL: ${{ github.event.issue }}
-          PR_NO: ${{ github.event.issue.number.html_url }}
+          PR_URL: ${{ github.event.issue.html_url }}
+          PR_NO: ${{ github.event.issue.number }}
         run: |
           echo "BRANCH=$(gh pr view --json headRefName --jq .headRefName $PR_URL)"
           echo "BRANCH=$(gh pr view --json headRefName --jq .headRefName $PR_NO)"
