@@ -8,15 +8,17 @@ on:
 
 jobs:
   test:
-    if: |
-      github.event.issue.pull_request &&
-      startsWith(github.event.comment.body, '/fastlane')
+    # if: |
+    #   github.event.issue.pull_request &&
+    #   startsWith(github.event.comment.body, '/fastlane')
 
     runs-on: ubuntu-latest
 
     steps:
       - name: print event
-        run: echo ${{ toJson(github.event) }}
+        env:
+          event: ${{ toJson(github.event) }}
+        run: echo "$event"
 
       - name: test
         env:
