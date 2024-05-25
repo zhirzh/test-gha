@@ -15,10 +15,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: print event
-        env:
-          event: ${{ toJson(github.event) }}
-        run: echo "$event"
+      - name: Start SSH
+        uses: Tofandel/ssh-server-action@v1.0.0
 
       - name: test
         env:
