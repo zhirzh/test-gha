@@ -6,9 +6,9 @@ on:
 
 jobs:
   fastlane:
-    if: |
-      github.event.issue.pull_request &&
-      startsWith(github.event.comment.body, '/fastlane')
+    # if: |
+    #   github.event.issue.pull_request &&
+    #   startsWith(github.event.comment.body, '/fastlane')
 
     runs-on: ubuntu-latest
 
