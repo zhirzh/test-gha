@@ -19,21 +19,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           result-encoding: json
-          script: |
-            require('./.github/test')
-
-            const comment = context.payload.comment.body
-            if (!comment.startsWith('/fastlane')) {
-              return
-            }
-
-            const args = comment.replace('/fastlane', '').trim()
-
-            const pr = await fetch(context.payload.issue.pull_request.url).then(res => res.json())
-            const branch = pr.head.ref
-
-            core.setOutput('args', args)
-            core.setOutput('branch', branch)
+          script: require('./.github/test')
 
       - uses: circleci-public/trigger-circleci-pipeline-action@v1.2.0
         if: steps.get-pr-data.outputs.branch
