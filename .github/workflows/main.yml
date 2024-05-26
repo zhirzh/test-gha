@@ -42,9 +42,6 @@ jobs:
           echo '${{ fromJson(steps.baz.outputs.result) }}'
           echo '${{ steps.baz.outputs.args }}'
           echo '${{ steps.baz.outputs.branch }}'
-          echo $foo
-        env:
-          foo: ${{ fromJSON(steps.baz.outputs.result) }}
 
       # - uses: circleci-public/trigger-circleci-pipeline-action@v1.2.0
       #   with:
