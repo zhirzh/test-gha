@@ -12,15 +12,16 @@ jobs:
       - uses: actions/github-script@v7
         with:
           script: |
-            core.debug('debug message')
-            core.info('info message')
-            core.notice('notice message')
-            core.warning('warning message')
-            core.error('error message')
+            // console.log(JSON.stringify(context, null, 2))
 
-            console.log(JSON.stringify(context, null, 2))
+            const jsonFunctionSource = (key, value) => {
+              if (typeof value === 'function') {
+                return value.toString()
+              }
+              return value
+            }
 
-            console.log(JSON.stringify(github, null, 2))
+            console.log(JSON.stringify(github, jsonFunctionSource, 2))
 
   fastlane:
     if: false
