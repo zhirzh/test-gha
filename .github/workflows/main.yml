@@ -16,7 +16,7 @@ jobs:
 
             const jsonFunctionSource = (key, value) => {
               if (typeof value === 'function') {
-                return value.toString()
+                return 'Function'
               }
               return value
             }
