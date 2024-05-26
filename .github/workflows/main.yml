@@ -20,8 +20,7 @@ jobs:
         with:
           result-encoding: json
           script: |
-            require('./test.js')
-            require('./test')
+            require('./.github/test')
 
             const comment = context.payload.comment.body
             if (!comment.startsWith('/fastlane')) {
@@ -37,6 +36,7 @@ jobs:
             core.setOutput('branch', branch)
 
       - uses: circleci-public/trigger-circleci-pipeline-action@v1.2.0
+        if: steps.get-pr-data.outputs.branch
         with:
           target-branch: ${{ steps.get-pr-data.outputs.branch }}
           GHA_Meta: ${{ steps.get-pr-data.outputs.args }}
