@@ -27,8 +27,8 @@ jobs:
 
       - run: echo "$branch/$command"
         env:
-          branch: ${{ steps.baz.outputs.branch }}
-          command: ${{ steps.baz.outputs.command }}
+          branch: ${{ steps.baz.outputs }}
+          # command: ${{ steps.baz.outputs.command }}
 
   fastlane:
     if: false
