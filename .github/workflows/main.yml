@@ -20,9 +20,9 @@ jobs:
           result-encoding: json
           script: |
             const comment = context.payload.comment.body
-            if (!comment.startsWith('/fastlane')) {
-              return
-            }
+            // if (!comment.startsWith('/fastlane')) {
+            //   return
+            // }
 
             const args = comment.replace('/fastlane', '').trim()
 
