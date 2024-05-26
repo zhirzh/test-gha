@@ -1,4 +1,4 @@
-export default async function main(context, core) {
+module.exports = async function main(context, core) {
   const comment = context.payload.comment.body;
   if (!comment.startsWith("/fastlane")) {
     return;
@@ -14,4 +14,4 @@ export default async function main(context, core) {
 
   core.setOutput("args", args);
   core.setOutput("branch", branch);
-}
+};
