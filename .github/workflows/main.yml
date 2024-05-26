@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: peter-evans/slash-command-dispatch@v4
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ github.token }}
           commands: hello
 
   test:
