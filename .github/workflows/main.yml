@@ -25,10 +25,9 @@ jobs:
               command
             }
 
-      - run: echo "$branch/$command"
+      - run: echo "$result"
         env:
-          branch: ${{ steps.baz.outputs }}
-          # command: ${{ steps.baz.outputs.command }}
+          result: ${{ steps.baz.outputs.result }}
 
   fastlane:
     if: false
