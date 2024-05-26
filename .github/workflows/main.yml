@@ -5,7 +5,11 @@ on:
       - edited
 
 jobs:
-  test:
+  fastlane:
+    if: |
+      github.event.issue.pull_request &&
+      startsWith(github.event.comment.body, '/fastlane')
+
     runs-on: ubuntu-latest
 
     steps:
@@ -13,41 +17,35 @@ jobs:
         id: baz
         uses: actions/github-script@v7
         with:
+          result-encoding: json
           script: |
+            const comment = context.payload.comment.body
+            if (!comment.startsWith('/fastlane')) {
+              return
+            }
+
+            const args = comment.replace('/fastlane', '').trim()
+
             const pr = await fetch(context.payload.issue.pull_request.url).then(res => res.json())
             const branch = pr.head.ref
 
-            const comment = context.payload.comment.body
-            const command = comment.startsWith('/fastlane') ? comment.replace('/fastlane', '').trim() : null
+            core.setOutput('args', args)
+            core.setOutput('branch', branch)
 
             return {
+              args,
               branch,
-              command
             }
 
-      - run: echo "$result"
-        env:
-          result: ${{ steps.baz.outputs.result }}
+      - run: |
+          echo ${{ steps.baz.outputs.result }}
+          echo ${{ steps.baz.outputs.args }}
+          echo ${{ steps.baz.outputs.branch }}
 
-  fastlane:
-    if: false
-
-    # if: |
-    #   github.event.issue.pull_request &&
-    #   startsWith(github.event.comment.body, '/fastlane')
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - id: get-pr-branch
-        run: echo "BRANCH=$(gh pr view --json headRefName --jq .headRefName $PR_URL)"
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR_URL: ${{ github.event.issue.html_url }}
-
-      - uses: circleci-public/trigger-circleci-pipeline-action@v1.2.0
-        with:
-          target-branch: ${{ steps.get-pr-branch.outputs.BRANCH }}
-          GHA_Meta: ${{ github.event.comment.body }}
-        env:
-          CCI_TOKEN: ${{ secrets.CCI_TOKEN_SZ }}
+      # - uses: circleci-public/trigger-circleci-pipeline-action@v1.2.0
+      #   with:
+      #     target-branch: ${{ DATA.branch }}
+      #     GHA_Meta: ${{ DATA.args }}
+      #   env:
+      #     DATA: ${{ fromJSON(steps.baz.outputs.result) }}
+      #     CCI_TOKEN: ${{ secrets.CCI_TOKEN_SZ }}
