@@ -14,4 +14,6 @@ module.exports = async function main(context, core) {
 
   core.setOutput("args", args);
   core.setOutput("branch", branch);
+
+  console.log([args, branch]);
 };
