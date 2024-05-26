@@ -18,7 +18,7 @@ jobs:
             core.warning('warning message')
             core.error('error message')
 
-            console.log(JSON.stringify(conext, null, 2))
+            console.log(JSON.stringify(context, null, 2))
 
             console.log(JSON.stringify(github, null, 2))
 
