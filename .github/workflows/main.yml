@@ -6,23 +6,25 @@ on:
 
 jobs:
   fastlane:
-    # if: |
-    #   github.event.issue.pull_request &&
-    #   startsWith(github.event.comment.body, '/fastlane')
+    if: |
+      github.event.issue.pull_request &&
+      startsWith(github.event.comment.body, '/fastlane')
 
     runs-on: ubuntu-latest
 
     steps:
-      - name: foo
-        id: baz
+      - id: get-pr-data
         uses: actions/github-script@v7
         with:
           result-encoding: json
           script: |
+            require('./test.js')
+            require('./test')
+
             const comment = context.payload.comment.body
-            // if (!comment.startsWith('/fastlane')) {
-            //   return
-            // }
+            if (!comment.startsWith('/fastlane')) {
+              return
+            }
 
             const args = comment.replace('/fastlane', '').trim()
 
@@ -32,23 +34,9 @@ jobs:
             core.setOutput('args', args)
             core.setOutput('branch', branch)
 
-            return {
-              args,
-              branch,
-            }
-
-      - run: |
-          echo '${{ steps.baz.outputs.result }}'
-          echo '${{ steps.baz.outputs.args }}'
-          echo '${{ steps.baz.outputs.branch }}'
-          echo '${{ fromJson(steps.baz.outputs.result) }}'
-          echo '${{ fromJson(steps.baz.outputs.result).args }}'
-          echo '${{ fromJson(steps.baz.outputs.result).branch }}'
-
-      # - uses: circleci-public/trigger-circleci-pipeline-action@v1.2.0
-      #   with:
-      #     target-branch: ${{ DATA.branch }}
-      #     GHA_Meta: ${{ DATA.args }}
-      #   env:
-      #     DATA: ${{ fromJSON(steps.baz.outputs.result) }}
-      #     CCI_TOKEN: ${{ secrets.CCI_TOKEN_SZ }}
+      - uses: circleci-public/trigger-circleci-pipeline-action@v1.2.0
+        with:
+          target-branch: ${{ steps.get-pr-data.outputs.branch }}
+          GHA_Meta: ${{ steps.get-pr-data.outputs.args }}
+        env:
+          CCI_TOKEN: ${{ secrets.CCI_TOKEN_SZ }}
