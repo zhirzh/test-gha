@@ -1,5 +1,3 @@
-# fastlane build platform:android
-
 on:
   issue_comment:
     types:
@@ -7,45 +5,38 @@ on:
       - edited
 
 jobs:
-  test:
-    if: |
-      github.event.issue.pull_request &&
-      startsWith(github.event.comment.body, '/fastlane')
+  fastlane:
+    # if: |
+    #   github.event.issue.pull_request &&
+    #   startsWith(github.event.comment.body, '/fastlane')
 
     runs-on: ubuntu-latest
 
     steps:
-      - name: print event
-        run: echo ${{ toJson(github.event) }}
-
-      - name: test
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR_URL: ${{ github.event.issue }}
-          PR_NO: ${{ github.event.issue.number }}
-        run: |
-          echo "BRANCH=$(gh pr view --json headRefName --jq .headRefName $PR_URL)"
-          echo "BRANCH=$(gh pr view --json headRefName --jq .headRefName $PR_NO)"
-
-      - id: get-pr-branch
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR_URL: ${{ github.event.issue }}
-        run: |
-          echo "BRANCH=$(gh pr view --json headRefName --jq .headRefName $PR_URL)" >> "$GITHUB_OUTPUT"
-
-      - name: Split the string
-        uses: actions/github-script@v3
+      - id: get-pr-data
+        uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          result-encoding: json
           script: |
-            const comment = context.payload.comment.body;
-            const parts = comment.split(' ');
-            console.log(parts);
+            require('./test.js')
+            require('./test')
+
+            const comment = context.payload.comment.body
+            if (!comment.startsWith('/fastlane')) {
+              return
+            }
+
+            const args = comment.replace('/fastlane', '').trim()
+
+            const pr = await fetch(context.payload.issue.pull_request.url).then(res => res.json())
+            const branch = pr.head.ref
+
+            core.setOutput('args', args)
+            core.setOutput('branch', branch)
 
       - uses: circleci-public/trigger-circleci-pipeline-action@v1.2.0
+        with:
+          target-branch: ${{ steps.get-pr-data.outputs.branch }}
+          GHA_Meta: ${{ steps.get-pr-data.outputs.args }}
         env:
           CCI_TOKEN: ${{ secrets.CCI_TOKEN_SZ }}
-        with:
-          target-branch: ${{ steps.get-pr-branch.outputs.BRANCH }}
-          GHA_Meta: ${{ github.event.comment.body }}
