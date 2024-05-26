@@ -12,7 +12,8 @@ jobs:
       - uses: actions/github-script@v7
         with:
           script: |
-            console.log(typeof fetch)
+            const pr = await fetch(context.payload.issue.url).then(res => res.json())
+            console.log(pr.head.ref)
 
   fastlane:
     if: false
