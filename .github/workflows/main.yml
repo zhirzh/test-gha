@@ -13,7 +13,8 @@ jobs:
         with:
           script: |
             const pr = await fetch(context.payload.issue.pull_request.url).then(res => res.json())
-            console.log(JSON.stringify(pr, null, 2))
+            // console.log(JSON.stringify(pr, null, 2))
+            console.log(pr.head.ref)
 
   fastlane:
     if: false
